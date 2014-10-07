@@ -22,8 +22,46 @@
   -webkit-animation: glowing 1500ms infinite;
 }
 
-.tooltip {
-	background: white;
-	width: 2em;
-	height: 1em;
+span {
+  color: #a8a3a3;
+}
+
+.monster-img {
+  float: right;
+  margin-top: -4em;
+  border: 1px solid black;
+  padding: 3px;
+}
+
+.modal-header {
+  font-family: 'Rock Salt', cursive;
+}
+
+.descrip p {
+  margin-left: 1em;
+  font-size: 12px;
+  margin-top: 1em;
+}
+
+.fight-txt {
+  position: fixed;
+  background: rgba(0,0,0,0.9);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: none;
+  color: white;
+}
+
+.tlt {
+  margin-top: 25%;
+  margin-left: 35%;
+  font-size: 8em;
+  font-family: 'Rock Salt', cursive;
+}
+
+.texts {
+  list-style: none;
 }

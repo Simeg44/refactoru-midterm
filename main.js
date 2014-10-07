@@ -14,7 +14,16 @@ var setPlayerPos = function(pos, map) {
 	});
 }
 
+
+// Fill the map with monsters
 var populate = function(map) {
+
+	if (markers.length > 0) {
+		for (var j = 0; j < monsters.length; j++) {
+			markers[j].setMap(null);
+		}
+		markers = [];
+	}
 
     for (var i = 0; i < monsters.length; i++) {
     	setTimeout(function() {
@@ -35,39 +44,65 @@ Kakoi.prototype.render = function(map) {
     	// The anchor for this image is the base of the flagpole at 0,32.
     	anchor: new google.maps.Point(38, 38)
     }
-    /*for (var i = 0; i < monsters.length; i++) {
-    	var myLatLng = new google.maps.LatLng(monsters[i].location[0], monsters[i].location[1]);
 
-	    var marker = new google.maps.Marker({
-	    	position: myLatLng,
-	    	map: map,
-	    	icon: image,
-	    	animation: google.maps.Animation.DROP,
-	    	title: "Kakoi"
-	    });
-	}*/
 	var myLatLng = new google.maps.LatLng(monster.location[0], monster.location[1]);
-	markers.push(new google.maps.Marker({
+	var marker = (new google.maps.Marker({
 		position: myLatLng,
 	    map: map,
 	    icon: image,
 	    animation: google.maps.Animation.DROP
 	}));
+	markers.push(marker);
+
+	google.maps.event.addListener(marker, 'click', function(event) {
+
+		if (monster.known === false) {
+			var name = $("<h3 class='monster-name'>???</h3><img class='monster-img' src='Images/duck_shadow.jpg'>");
+			var local = $("<p class='monster-pref'>Location: <span>???</span></p>");
+			var descrip = $("<div class='descrip'><strong>Purifies To: <strong><p>Common: <span>???</span></p><p>Rare: <span>???</span></p></div>");
+		}
+		else {
+			var name = $("<h3 class='monster-name'>" + monster.name + "</h3><img class='monster-img' src='" + monster.image + "'>");
+
+			if (monster.pref === "none") {
+				var local = $("<p class='monster-pref'>Location: <span>No Preference</span></p>");
+			}
+			else {
+				var local = $("<p class='monster-pref>Location: " + monster.pref + "</p>");
+			} 
+
+			if (monster.creates === "none") {
+				var descrip = $("<div class='descrip'><strong>Purifies To: <strong><p>Common: <span>None</span></p><p>Rare: <span>None</span></p></div>");
+			}
+			else if (monster.creates.length === 1) {
+				local = local + $("<p><strong>Purifies To: <strong><p>Common: " + monster.creates[0] 
+					+ "</p><p>Rare: <span>None</span></p></p>");
+			}
+			else {
+				local = local + $("<p><strong>Purifies To: <strong><p>Common: " + monster.creates[0] 
+					+ "</p><p>Rare: " + monster.creates[1] + "</p></p>");
+			}
+		}
+
+		$(".modal-header").append(name);
+		$(".modal-body").append(local).append(descrip);
+
+		$("#monster-info").modal('show');
+	})
 
 	iterator++;
-
-	var tooltip = $("#temp").clone();
-	tooltip.attr("id", "");
-	this.element = $("<div>");
-
-	$(this).on("click", function() {
-		this.element.append(tooltip);
-	})
 }
+
+///////////////////////
+// Document On Ready //
+///////////////////////
 
 $(document).on('ready', function() {
   
 	var map;
+
+	var background = document.getElementById("background");
+	background.play();
 
 	var styles = [
   {
@@ -113,6 +148,10 @@ $(document).on('ready', function() {
 	var styledMap = new google.maps.StyledMapType(styles, 
 		{name: "Styled Map"});
 
+
+////////////////
+// Initialize //
+////////////////
 	function initialize() {
 		var mapOptions = {
 			zoom: 15,
@@ -130,7 +169,10 @@ $(document).on('ready', function() {
 		      mapOptions);
 
 
-	  if(navigator.geolocation) {
+		///////////////////
+		// Geolocation //
+		///////////////////
+	  	if(navigator.geolocation) {
 	  	navigator.geolocation.getCurrentPosition(function(position) {
 	  		var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
@@ -180,6 +222,7 @@ $(document).on('ready', function() {
 		var lat = event.latLng.lat();
 		var lng = event.latLng.lng();
 		console.log(lat, lng);
+		console.log(monsters[0]);
 	})
 
 	//Associate the styled map with the MapTypeId and set it to display.
@@ -187,12 +230,18 @@ $(document).on('ready', function() {
   	map.setMapTypeId('map_style');
 }
 	
+	/////////////////////
+	// Initialize End //
+	/////////////////////
 
 	google.maps.event.addDomListener(window, 'load', initialize);
 
 	$(".sense").on("click", function() {
-
+		iterator = 0;
 		populate(map);
+
+		var audio = document.getElementById("sonar-ping");
+		audio.play();
 	})
 
 	$(".sense").hover(
@@ -200,7 +249,33 @@ $(document).on('ready', function() {
 			$(this).addClass("glow");
 		}, function() {
 			$(this).removeClass("glow");
+	});
+
+	// clears modal window after each close
+	$('#monster-info').on('hidden.bs.modal', function (e) {
+		$(".modal-header").empty();
+		$(".modal-body").empty();
+	})
+
+
+	$("#fight").on("click", function() {
+		var background = document.getElementById("background");
+		background.pause();
+		$(".fight-txt").show();
+		$(".tlt").textillate("start");
+		$(".tlt").textillate ({
+			selector: ".texts",
+			minDisplayTime: 0,
 		});
+		var audio = document.getElementById("fight-clip")
+		audio.play();
+
+		setTimeout(function() {
+			$(".fight-txt").hide();
+			$(".tlt").textillate("stop");
+
+		}, 2500);
+	})
 
 
 });
