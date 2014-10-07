@@ -4,3 +4,26 @@
         padding: 0px
 
     }
+
+.sense-container {
+	width: 20%;
+	position: absolute;
+	top: 90%;
+	left: 40%;
+}
+
+@-webkit-keyframes glowing {
+  0% { background-color: #d43f3a; -webkit-box-shadow: 0 0 3px #d43f3a; }
+  50% { background-color: #ff8482; -webkit-box-shadow: 0 0 10px #ff8482; }
+  100% { background-color: #d43f3a; -webkit-box-shadow: 0 0 3px #d43f3a; }
+}
+
+.glow {
+  -webkit-animation: glowing 1500ms infinite;
+}
+
+.tooltip {
+	background: white;
+	width: 2em;
+	height: 1em;
+}
