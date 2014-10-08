@@ -65,3 +65,9 @@ span {
 .texts {
   list-style: none;
 }
+
+.arena {
+  max-width: 50%;
+  margin: auto;
+  margin-top: 10%;
+}

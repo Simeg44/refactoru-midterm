@@ -4,10 +4,11 @@ var World = function(kakoi, percentage, zone) {
 	this.zone = zone;				// players zone by city or state
 }
 
-var Player = function(name, level, pets, location){
+var Player = function(name, level, pets, attacker, location){
 	this.name = name; 			// string
 	this.level = level; 		// number
-	this.pets = pets;  			// array
+	this.pets = pets || [];  	// array
+	this.attacker = attacker || "none"		// equiped pet
 	this.location = location 	// string of coordinantes?
 }
 
@@ -22,7 +23,7 @@ var Kakoi = function(name, image, health, location, pref, known, creates) {
 	this.creates = creates || "none";		// array of Doroi born from this
 }
 
-var Doroi = function(name, image, health, origin){
+var Blessing = function(name, image, health, origin){
 	this.name = name;			// string
 	this.image = image; 		// image file?
 	this.health = health;		// number
@@ -30,20 +31,20 @@ var Doroi = function(name, image, health, origin){
 }
 
 var Finder = function(name, image, health, origin, known, role, tracking) {
-	Doroi.call(this, name, image, health, origin);
+	Blessing.call(this, name, image, health, origin);
 
 	this.role = role;			// string (necessary?)
 	this.tracking = tracking;	// number that determines tracking ability strength
 }
-Finder.prototype = new Doroi();
+Finder.prototype = new Blessing();
 
-var Fighter = function(name, image, health, origin, known, role, strength) {
-	Doroi.call(this, name, image, health, origin);
+var Fighter = function(name, image, health, origin, role, strength) {
+	Blessing.call(this, name, image, health, origin);
 
 	this.role = role;			// string (necessary?)
 	this.strength = strength;	// number that determines fighting strength
 }
-Fighter.prototype = new Doroi();
+Fighter.prototype = new Blessing();
 
 
 

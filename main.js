@@ -84,13 +84,38 @@ Kakoi.prototype.render = function(map) {
 			}
 		}
 
-		$(".modal-header").append(name);
-		$(".modal-body").append(local).append(descrip);
+		$("#monster-info").find(".modal-header").append(name);
+		$("#monster-info").find(".modal-body").append(local).append(descrip);
 
 		$("#monster-info").modal('show');
+
+		$("#fight").on("click", function() {
+			console.log(monster);
+			var audio = document.getElementById("battle-music");
+			audio.play();
+			monster.battle();
+		})
+
 	})
 
 	iterator++;
+}
+
+Kakoi.prototype.battle = function() {
+	console.log(this.health);
+	var turn = true;
+
+	$("#run").on("click", function() {
+		var audio = document.getElementById("battle-music");
+		audio.pause();
+	})
+
+	if (turn) {
+		$("#battle").find("button").attr("disabled", "");
+	}
+	else {
+		$("#battle").find("button").attr("disabled", "disabled");
+	}
 }
 
 ///////////////////////
@@ -104,6 +129,101 @@ $(document).on('ready', function() {
 	var background = document.getElementById("background");
 	background.play();
 
+	var styles = [
+    {
+        "featureType": "water",
+        "stylers": [
+            {"color": "#021019"}
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "stylers": [
+            {"color": "#08304b"}
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "geometry",
+        "stylers": [
+            {"color": "#0c4152" },
+            {"lightness": 5}
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {"color": "#000000"}
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {"color": "#0b434f"},
+            {"lightness": 25}
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {"color": "#000000"}
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {"color": "#0b3d51"},
+            {"lightness": 16}
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry",
+        "stylers": [
+            {"color": "#000000"}
+        ]
+    },
+    {
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {"color": "#ffffff"}
+        ]
+    },
+    {
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {"color": "#000000"},
+            {"lightness": 13}
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {"color": "#146474"}
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {"color": "#000000"}
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {"color": "#144b53"},
+            {"lightness": 14},
+            {"weight": 1.4}
+        ]
+    }
+];
+	/*
 	var styles = [
   {
     "stylers": [
@@ -141,7 +261,7 @@ $(document).on('ready', function() {
       { "hue": "#0022ff" }
     ]
   }
-];
+];*/
 
 	// Create a new StyledMapType object, passing it the array of styles,
   	// as well as the name to be displayed on the map type control.
@@ -159,6 +279,7 @@ $(document).on('ready', function() {
 			draggable: false,
 			scaleControl: false,
 			disableDefaultUI: true,
+			scrollwheel: false,
 
 		     // Include the MapTypeId to add to the map type control
 		    mapTypeControlOptions: {
@@ -253,8 +374,8 @@ $(document).on('ready', function() {
 
 	// clears modal window after each close
 	$('#monster-info').on('hidden.bs.modal', function (e) {
-		$(".modal-header").empty();
-		$(".modal-body").empty();
+		$(this).find(".modal-header").empty();
+		$(this).find(".modal-body").empty();
 	})
 
 
@@ -274,6 +395,9 @@ $(document).on('ready', function() {
 			$(".fight-txt").hide();
 			$(".tlt").textillate("stop");
 
+			$("#battle").modal("show");
+			// var audio = document.getElementById("battle-music");
+			// audio.play();
 		}, 2500);
 	})
 

@@ -24,3 +24,18 @@ var monster6 = new Kakoi("Fraus", "Images/kakoi.png", 250, [40.0126278281893, -1
 
 
 var monsters = [monster1, monster2, monster3, monster4, monster5, monster6];
+
+var pistis = new Blessing("Pistis", "Images/carbuncle.png", 1000, "Metus", "Fighter", 80);
+
+var player1 = new Player("Ammy", "1", [pistis], pistis, "Colorado");
+
+
+
+
+
+
+
+
+
+
+
