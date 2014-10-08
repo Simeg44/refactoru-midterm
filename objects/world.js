@@ -13,10 +13,12 @@ var Player = function(name, level, pets, attacker, location){
 }
 
 
-var Kakoi = function(name, image, health, location, pref, known, creates) {
+var Kakoi = function(name, image, health, strength, speed, location, pref, known, creates) {
 	this.name = name;			// string
 	this.image = image;			// image file?
 	this.health = health;		// number
+	this.strength = strength;
+	this.speed = speed;			// speed
 	this.location = location;	// location coordinates
 	this.pref = pref;			// preferred location
 	this.known = known;			// bool
@@ -37,14 +39,17 @@ var Finder = function(name, image, health, origin, known, role, tracking) {
 	this.tracking = tracking;	// number that determines tracking ability strength
 }
 Finder.prototype = new Blessing();
+Finder.prototype.constructor = Finder;
 
-var Fighter = function(name, image, health, origin, role, strength) {
+var Fighter = function(name, image, health, origin, role, strength, speed) {
 	Blessing.call(this, name, image, health, origin);
 
 	this.role = role;			// string (necessary?)
 	this.strength = strength;	// number that determines fighting strength
+	this.speed = speed;			// number that determine hit %
 }
 Fighter.prototype = new Blessing();
+Fighter.prototype.constructor = Fighter;
 
 
 

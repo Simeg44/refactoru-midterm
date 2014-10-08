@@ -1,6 +1,7 @@
 
 var markers = [];
 var iterator = 0;
+var turn = true;
 
 var setPlayerPos = function(pos, map) {
 	var image = "Images/sparkle.png";
@@ -35,6 +36,19 @@ var populate = function(map) {
 
 Kakoi.prototype.render = function(map) {
 	var monster = monsters[iterator];
+
+	if (monster.health <= 0) {
+		var image = {
+			url: "Images/icon_shuai.png",
+			anchor: new google.maps.Point(38, 38)
+		}
+		var myLatLng = new google.maps.LatLng(monster.location[0], monster.location[1]);
+		var marker = (new google.maps.Marker({
+			position: myLatLng,
+		    map: map,
+		    icon: image,
+		}));
+	}
 	var image = {
 		url: "Images/icon_angry.png",
 		 // This marker is 20 pixels wide by 32 pixels tall.
@@ -53,6 +67,7 @@ Kakoi.prototype.render = function(map) {
 	    animation: google.maps.Animation.DROP
 	}));
 	markers.push(marker);
+	this.marker = marker;
 
 	google.maps.event.addListener(marker, 'click', function(event) {
 
@@ -93,7 +108,34 @@ Kakoi.prototype.render = function(map) {
 			console.log(monster);
 			var audio = document.getElementById("battle-music");
 			audio.play();
-			monster.battle();
+
+			var monsterHealth = monster.health;
+			var fighterHealth = player1.attacker.health;
+			$(".health-nums").empty();
+			$(".health-nums").append("<p>" + monsterHealth + "/" + monster.health + "</p>");
+			console.log(monsterHealth);
+			player1.attack(monster, monsterHealth, fighterHealth);
+			
+			var background = document.getElementById("background");
+			background.pause();
+			$(".fight-txt").show();
+			$(".tlt").textillate("start");
+			$(".tlt").textillate ({
+				selector: ".texts",
+				minDisplayTime: 0,
+			});
+			var audio = document.getElementById("fight-clip")
+			audio.play();
+
+			setTimeout(function() {
+				$(".fight-txt").hide();
+				$(".tlt").textillate("stop");
+
+				$("#battle").modal("show");
+				// var audio = document.getElementById("battle-music");
+				// audio.play();
+			}, 2500);
+		
 		})
 
 	})
@@ -101,21 +143,123 @@ Kakoi.prototype.render = function(map) {
 	iterator++;
 }
 
-Kakoi.prototype.battle = function() {
-	console.log(this.health);
-	var turn = true;
+Player.prototype.attack = function(monster, monsterHealth, fighterHealth) {
+	$("#battle").find("button").removeAttr("disabled");
+			
+	$(".monster-list").off("click").on("click", "li", function() {
+		var old = $(".selection").closest("li");
+		if (!$(this).hasClass("selected")) {
+			$(this).prepend($(".selection")).addClass("selected");
+			old.removeClass("selected");
+			old.find(".selection").detach();
+		}
+		
+	});
 
-	$("#run").on("click", function() {
+	$("#run").off("click").on("click", function() {
 		var audio = document.getElementById("battle-music");
+		var background = document.getElementById("background");
 		audio.pause();
+		background.play();
 	})
 
-	if (turn) {
-		$("#battle").find("button").attr("disabled", "");
-	}
-	else {
-		$("#battle").find("button").attr("disabled", "disabled");
-	}
+	console.log("adding attack");
+
+	$("#attack").off("click").on("click", function() {
+		var hit = $("<img class='hit' src='Images/hit.png'>");
+		console.log("attack");
+		
+		// if monster is hit change animations and health
+		if (player1.attacker.speed+Math.random() > .9) {
+			monsterHealth = monsterHealth - player1.attacker.strength;
+			$(".monster-list").find(".selected").append(hit);
+
+			setTimeout(function() {
+				$(".monster-list").find(".hit").remove();
+				console.log("a", monster);
+
+				// monster defeated
+				if (monsterHealth <= 0) {
+					$("#battle").modal("hide");
+					$(".monster-health").find(".health-nums").empty();
+					setTimeout(function() {
+						$(".monster-health").find(".health").css("width", "100%");
+						monster.health = monsterHealth;
+						console.log(monster.health);
+						
+						monster.marker.setMap(null);
+					}, 500);
+					
+				}
+
+				$(".monster-health").find(".health-nums").empty();
+				$(".health-nums").append("<p>" + monsterHealth + "/" + monster.health + "</p>");
+				var healthLeft = (monsterHealth/monster.health) * 100;
+				$(".monster-health").find(".health").css("width", healthLeft + "%");
+
+
+				monster.battle(monsterHealth, fighterHealth);
+			}, 200);
+
+
+		}
+		else {
+			// $(".arena").prepend("<p class='action'>Miss!</p>");
+			console.log("player misses");
+			monster.battle(monsterHealth, fighterHealth);
+		}
+		
+		// turn = false;
+		// monster.battle(monsterHealth, fighterHealth);
+	})
+}
+
+
+Kakoi.prototype.battle = function(monsterHealth, fighterHealth) {
+
+	
+
+		// if (turn) {
+		// 	player1.attack(this, monsterHealth, fighterHealth);
+			/*$("#battle").find("button").removeAttr("disabled");
+			
+			$("#run").on("click", function() {
+				var audio = document.getElementById("battle-music");
+				var background = document.getElementById("background");
+				audio.pause();
+				background.play();
+			})
+
+			$("#attack").on("click", function() {
+				if (player1.attacker.speed+Math.random() > 1) {
+					currentHealth = currentHealth - player1.attacker.strength;
+					console.log("monster", currentHealth);
+				}
+				else {
+					$(".arena").prepend("<p class='action'>Miss!</p>");
+				}
+				
+				turn = false;
+				this.battle();
+			})*/
+		// }
+		// else {
+			$("#battle").find("button").attr("disabled", "disabled");
+		setTimeout((function() {
+					if (this.speed+Math.random() > 1) {
+						fighterHealth = fighterHealth - this.strength;
+						console.log("pistis:", fighterHealth);
+						player1.attack(this, monsterHealth, fighterHealth);
+		
+					}
+					else {
+						// $(".arena").prepend("<p class='action'>Miss!</p>");
+						console.log("monster misses");
+						player1.attack(this, monsterHealth, fighterHealth);
+					}
+				}).bind(this), 1000);
+		// }
+	
 }
 
 ///////////////////////
@@ -268,6 +412,9 @@ $(document).on('ready', function() {
 	var styledMap = new google.maps.StyledMapType(styles, 
 		{name: "Styled Map"});
 
+$('#battle').on('hidden.bs.modal', function (e) {
+  $(".monster-list, #run, #attack, #fight").off("click");
+})
 
 ////////////////
 // Initialize //
@@ -380,25 +527,7 @@ $(document).on('ready', function() {
 
 
 	$("#fight").on("click", function() {
-		var background = document.getElementById("background");
-		background.pause();
-		$(".fight-txt").show();
-		$(".tlt").textillate("start");
-		$(".tlt").textillate ({
-			selector: ".texts",
-			minDisplayTime: 0,
-		});
-		var audio = document.getElementById("fight-clip")
-		audio.play();
-
-		setTimeout(function() {
-			$(".fight-txt").hide();
-			$(".tlt").textillate("stop");
-
-			$("#battle").modal("show");
-			// var audio = document.getElementById("battle-music");
-			// audio.play();
-		}, 2500);
+		
 	})
 
 

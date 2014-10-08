@@ -40,8 +40,36 @@
 		<audio src="Sounds/mistake_the_getaway.mp3" id="battle-music"></audio>
 		<div class="modal fade" id="battle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-content arena">
-				<img src="Images/versus.jpg" alt="">
-				<div class="modal-footer">
+				<div class="arena-back">
+					<!-- <div class="arena-body"> -->
+						<img src="Images/background.png" class="backdrop">
+						<div>
+							<img  class="char" src="Images/girl.png" alt="">
+							<img src="Images/carbuncle.png" alt="" class="pet">
+							<ul class="monster-list">
+								<li class="mon1 monster selected">
+									<img src="Images/arrow.png" alt="" class="selection">
+									<img src="Images/monster4.png">
+								</li>
+								<li class="mon2 monster">
+									<img src="Images/monster4.png">
+								</li>
+								<li class="mon3 monster">
+									<img src="Images/monster4.png">
+								</li>
+								<li class="monster-health">
+									<div class="health-nums">
+										<p></p>
+									</div>
+									<div class="health-container">
+										<div class="health"></div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					<!-- </div> -->
+				</div>
+				<div class="modal-footer controls">
 				        <button type="button" class="btn btn-danger" id="attack">Attack</button>
 				        <button type="button" class="btn btn-danger" id="purify">Purify</button>
 				        <button type="button" class="btn btn-danger" id="run" data-dismiss="modal">Run</button>
