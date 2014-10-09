@@ -182,13 +182,21 @@ Player.prototype.attack = function(monster, monsterHealth, fighterHealth) {
 				if (monsterHealth <= 0) {
 					$("#battle").modal("hide");
 					$(".monster-health").find(".health-nums").empty();
+					var image = "Images/icon_shuai.png";
+					monster.marker.setIcon(image);
+
 					setTimeout(function() {
 						$(".monster-health").find(".health").css("width", "100%");
 						monster.health = monsterHealth;
 						console.log(monster.health);
-						
-						monster.marker.setMap(null);
-					}, 500);
+						monster.marker.setIcon("Images/cloud.png");
+						var poof = document.getElementById("poof");
+						poof.play();
+
+						setTimeout(function() {
+							monster.marker.setMap(null);
+						}, 200);
+					}, 1500);
 					
 				}
 
