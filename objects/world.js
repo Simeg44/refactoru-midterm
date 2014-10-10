@@ -25,15 +25,16 @@ var Kakoi = function(name, image, health, strength, speed, location, pref, known
 	this.creates = creates || "none";		// array of Doroi born from this
 }
 
-var Blessing = function(name, image, health, origin){
+var Blessing = function(name, image, health, currentHealth, origin){
 	this.name = name;			// string
 	this.image = image; 		// image file?
 	this.health = health;		// number
+	this.currentHealth = currentHealth;		// current health number
 	this.origin	= origin;		// kakoi object
 }
 
-var Finder = function(name, image, health, origin, known, role, tracking) {
-	Blessing.call(this, name, image, health, origin);
+var Finder = function(name, image, health, currentHealth, origin, known, role, tracking) {
+	Blessing.call(this, name, image, health, currentHealth, origin);
 
 	this.role = role;			// string (necessary?)
 	this.tracking = tracking;	// number that determines tracking ability strength
@@ -41,8 +42,8 @@ var Finder = function(name, image, health, origin, known, role, tracking) {
 Finder.prototype = new Blessing();
 Finder.prototype.constructor = Finder;
 
-var Fighter = function(name, image, health, origin, role, strength, speed) {
-	Blessing.call(this, name, image, health, origin);
+var Fighter = function(name, image, health, currentHealth, origin, role, strength, speed) {
+	Blessing.call(this, name, image, health, currentHealth, origin);
 
 	this.role = role;			// string (necessary?)
 	this.strength = strength;	// number that determines fighting strength

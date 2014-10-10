@@ -67,7 +67,7 @@ span {
 }
 
 .arena {
-  max-width: 50%;
+  max-width: 80%;
   margin: auto;
   margin-top: 10%;
   height: 50%;
@@ -90,6 +90,7 @@ span {
 .backdrop {
   position: absolute;
   width: 100%;
+  margin-top: -10px;
 }
 
 .char {
@@ -163,6 +164,35 @@ span {
 .health-container {
   width: 8em;
   height: 1em;
+}
+
+.miss-text {
+  position: absolute;
+  color: white;
+  top: 30%;
+  left: 80%;
+  font-family: "Shadows into Light", cursive;
+}
+
+.pet-health {
+  right: 10%;
+  position: absolute;
+  top: 15%;
+}
+
+.controls {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: -5%;
+  right: 10%;
+  font-family: "shadows into light", cursive;
+  font-size: 20px;
+}
+
+.controls button {
+  background: #4da1a5;
+  border: 3px solid black;
+  border-radius: 5px;
 }
 
 

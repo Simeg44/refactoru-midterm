@@ -37,16 +37,34 @@
 			  </div>
 	 	</div>
 		
+		<audio src="Sounds/miss.wav" id="miss"></audio>
+		<audio src="Sounds/hit.wav" id="hit"></audio>
 		<audio src="Sounds/poof.wav" id="poof"></audio>
 		<audio src="Sounds/mistake_the_getaway.mp3" id="battle-music"></audio>
 		<div class="modal fade" id="battle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-content arena">
 				<div class="arena-back">
 					<!-- <div class="arena-body"> -->
-						<img src="Images/background.png" class="backdrop">
+						<img src="Images/cityscape.png" class="backdrop">
 						<div>
 							<img  class="char" src="Images/girl.png" alt="">
-							<img src="Images/carbuncle.png" alt="" class="pet">
+							<div class="pet">
+								<img src="Images/carbuncle.png">
+							</div>
+							<div class="pet-health">
+								<div class="health-nums">
+									<p></p>
+								</div>
+								<div class="health-container">
+									<div class="health"></div>
+								</div>
+							</div>
+							<div class="controls">
+							        <button type="button" id="attack">Attack</button>
+							        <button type="button" id="purify">Purify</button>
+							        <button type="button" id="run" data-dismiss="modal">Run</button>
+							</div>
+
 							<ul class="monster-list">
 								<li class="mon1 monster selected">
 									<img src="Images/arrow.png" alt="" class="selection">
@@ -58,23 +76,19 @@
 								<li class="mon3 monster">
 									<img src="Images/monster4.png">
 								</li>
-								<li class="monster-health">
+								<div class="monster-health">
 									<div class="health-nums">
 										<p></p>
 									</div>
 									<div class="health-container">
 										<div class="health"></div>
 									</div>
-								</li>
+								</div>
 							</ul>
 						</div>
 					<!-- </div> -->
 				</div>
-				<div class="modal-footer controls">
-				        <button type="button" class="btn btn-danger" id="attack">Attack</button>
-				        <button type="button" class="btn btn-danger" id="purify">Purify</button>
-				        <button type="button" class="btn btn-danger" id="run" data-dismiss="modal">Run</button>
-				</div>
+				
 			</div>
 		</div>
 	</div>

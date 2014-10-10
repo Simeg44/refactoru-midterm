@@ -25,7 +25,7 @@ var monster6 = new Kakoi("Fraus", "Images/kakoi.png", 250, .8, [40.0126278281893
 
 var monsters = [monster1, monster2, monster3, monster4, monster5, monster6];
 
-var pistis = new Fighter("Pistis", "Images/carbuncle.png", 1000, "Metus", "Fighter", 80, .8);
+var pistis = new Fighter("Pistis", "Images/carbuncle.png", 1000, 1000, "Metus", "Fighter", 80, .8);
 
 var player1 = new Player("Ammy", "1", [pistis], pistis, "Colorado");
 

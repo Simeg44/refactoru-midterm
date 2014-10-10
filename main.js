@@ -110,14 +110,17 @@ Kakoi.prototype.render = function(map) {
 			audio.play();
 
 			var monsterHealth = monster.health;
-			var fighterHealth = player1.attacker.health;
+			var fighterHealth = player1.attacker.currentHealth;
 			$(".health-nums").empty();
-			$(".health-nums").append("<p>" + monsterHealth + "/" + monster.health + "</p>");
+			$(".monster-list").find(".health-nums").append("<p>" + monsterHealth + "/" + monster.health + "</p>");
+			$(".pet-health").find(".health-nums").append("<p>" + fighterHealth + "/" 
+				+ player1.attacker.health + "</p>");
 			console.log(monsterHealth);
 			player1.attack(monster, monsterHealth, fighterHealth);
 			
 			var background = document.getElementById("background");
 			background.pause();
+			background.currentTime = 0;
 			$(".fight-txt").show();
 			$(".tlt").textillate("start");
 			$(".tlt").textillate ({
@@ -156,10 +159,11 @@ Player.prototype.attack = function(monster, monsterHealth, fighterHealth) {
 		
 	});
 
+	var audio = document.getElementById("battle-music");
+	var background = document.getElementById("background");
 	$("#run").off("click").on("click", function() {
-		var audio = document.getElementById("battle-music");
-		var background = document.getElementById("background");
 		audio.pause();
+		audio.currentTime = 0;
 		background.play();
 	})
 
@@ -167,12 +171,14 @@ Player.prototype.attack = function(monster, monsterHealth, fighterHealth) {
 
 	$("#attack").off("click").on("click", function() {
 		var hit = $("<img class='hit' src='Images/hit.png'>");
-		console.log("attack");
+		var hitAudio = document.getElementById("hit");
+		var missAudio = document.getElementById("miss");
 		
 		// if monster is hit change animations and health
 		if (player1.attacker.speed+Math.random() > .9) {
 			monsterHealth = monsterHealth - player1.attacker.strength;
-			$(".monster-list").find(".selected").append(hit);
+			$(".monster-list").find(".selected").append(hit); // show hit animation on selected monster
+			hitAudio.play();
 
 			setTimeout(function() {
 				$(".monster-list").find(".hit").remove();
@@ -184,10 +190,14 @@ Player.prototype.attack = function(monster, monsterHealth, fighterHealth) {
 					$(".monster-health").find(".health-nums").empty();
 					var image = "Images/icon_shuai.png";
 					monster.marker.setIcon(image);
+					audio.pause();
+					audio.currentTime = 0;
+					background.play();
 
 					setTimeout(function() {
 						$(".monster-health").find(".health").css("width", "100%");
-						monster.health = monsterHealth;
+						monster.health = monsterHealth;	 // permanently change monster health
+						player1.attacker.currentHealth = fighterHealth; // permanently change pet health
 						console.log(monster.health);
 						monster.marker.setIcon("Images/cloud.png");
 						var poof = document.getElementById("poof");
@@ -195,78 +205,74 @@ Player.prototype.attack = function(monster, monsterHealth, fighterHealth) {
 
 						setTimeout(function() {
 							monster.marker.setMap(null);
-						}, 200);
+						}, 500);
 					}, 1500);
 					
 				}
+				else {
+					$(".monster-health").find(".health-nums").empty();
+					$(".monster-health").find(".health-nums").append("<p>" + monsterHealth + "/" + monster.health + "</p>");
+					var healthLeft = (monsterHealth/monster.health) * 100;
+					$(".monster-health").find(".health").css("width", healthLeft + "%");
 
-				$(".monster-health").find(".health-nums").empty();
-				$(".health-nums").append("<p>" + monsterHealth + "/" + monster.health + "</p>");
-				var healthLeft = (monsterHealth/monster.health) * 100;
-				$(".monster-health").find(".health").css("width", healthLeft + "%");
 
-
-				monster.battle(monsterHealth, fighterHealth);
+					monster.battle(monsterHealth, fighterHealth);
+				}
 			}, 200);
 
 
 		}
+		// player misses monster
 		else {
-			// $(".arena").prepend("<p class='action'>Miss!</p>");
+			missAudio.play();
+			$(".monster-list").find(".selected").prepend("<p class='miss-text'>Miss!</p>");
 			console.log("player misses");
 			monster.battle(monsterHealth, fighterHealth);
+
+			setTimeout(function() {
+				$(".monster-list").find(".miss-text").remove();
+			}, 200);
 		}
 		
-		// turn = false;
-		// monster.battle(monsterHealth, fighterHealth);
 	})
 }
 
 
 Kakoi.prototype.battle = function(monsterHealth, fighterHealth) {
-
+	var hit = $("<img class='hit' src='Images/hit.png'>");
+	var hitAudio = document.getElementById("hit");
+	var missAudio = document.getElementById("miss");
 	
 
-		// if (turn) {
-		// 	player1.attack(this, monsterHealth, fighterHealth);
-			/*$("#battle").find("button").removeAttr("disabled");
-			
-			$("#run").on("click", function() {
-				var audio = document.getElementById("battle-music");
-				var background = document.getElementById("background");
-				audio.pause();
-				background.play();
-			})
-
-			$("#attack").on("click", function() {
-				if (player1.attacker.speed+Math.random() > 1) {
-					currentHealth = currentHealth - player1.attacker.strength;
-					console.log("monster", currentHealth);
-				}
-				else {
-					$(".arena").prepend("<p class='action'>Miss!</p>");
-				}
-				
-				turn = false;
-				this.battle();
-			})*/
-		// }
-		// else {
-			$("#battle").find("button").attr("disabled", "disabled");
-		setTimeout((function() {
-					if (this.speed+Math.random() > 1) {
-						fighterHealth = fighterHealth - this.strength;
-						console.log("pistis:", fighterHealth);
-						player1.attack(this, monsterHealth, fighterHealth);
+	$("#battle").find("button").attr("disabled", "disabled");
 		
-					}
-					else {
-						// $(".arena").prepend("<p class='action'>Miss!</p>");
-						console.log("monster misses");
-						player1.attack(this, monsterHealth, fighterHealth);
-					}
-				}).bind(this), 1000);
-		// }
+	setTimeout((function() {
+		if (this.speed+Math.random() > 1) {
+			hitAudio.play();
+			console.log(hit);
+			$(".arena").find(".pet").append(hit);
+			fighterHealth = fighterHealth - this.strength;
+			console.log("pistis:", fighterHealth);
+
+			$(".pet-health").find(".health-nums").empty();
+			$(".pet-health").find(".health-nums").append("<p>" + fighterHealth + "/" + player1.attacker.health + "</p>");
+			var healthLeft = (fighterHealth/player1.attacker.health) * 100;
+			$(".pet-health").find(".health").css("width", healthLeft + "%");
+
+			setTimeout(function() {
+				$(".arena").find(".hit").remove();
+			}, 200);
+
+			player1.attack(this, monsterHealth, fighterHealth);
+
+		}
+		else {
+			missAudio.play();
+			// $(".arena").prepend("<p class='action'>Miss!</p>");
+			console.log("monster misses");
+			player1.attack(this, monsterHealth, fighterHealth);
+		}
+	}).bind(this), 1000);
 	
 }
 
